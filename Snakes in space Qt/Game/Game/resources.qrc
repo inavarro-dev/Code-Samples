@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/Images">
+        <file>space.jpg</file>
+        <file>ship.png</file>
+        <file>missile.png</file>
+        <file>snake.gif</file>
+    </qresource>
+</RCC>

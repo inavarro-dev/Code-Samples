@@ -1,0 +1,345 @@
+Main.cpp////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#include <iostream>
+#include <string>
+#include "Student.h"
+#include "StudentList.h"
+
+using namespace std;
+
+int main()
+{
+	/*A.Insert a new record
+	B.Delete a record
+	C.Edit a record - Make changes to a record.Maybe a date has changed or an entrance fee has changed.
+	D.Display all records
+	E.Exit.  (The user can close the program by entering X)*/
+	StudentList * students = new StudentList;
+	int choice;
+	students->loadFromFile();
+
+	cout << "Welcome to Student Gradebook\n\n\n";
+
+	do
+	{
+		
+		cout << "1. Insert New Student.\n";
+		cout << "2. Delete an existing Student.\n";
+		cout << "3. Change a student's grade.\n";
+		cout << "4. Display a list of all students\n";
+		cout << "5. Exit and save.\n\n";
+		cout << "Please make your Selection:   ";
+
+		cin >> choice;
+
+		system("cls");
+
+		switch (choice) {
+		case 1:
+		{
+			cout << "Insert student info :\n\n";
+			students->insertStudent();
+			break;
+		}
+		case 2:
+		{
+			cout << "Select a student to delete:\n\n";
+			students->deleteStudent();
+			break;
+		}
+		case 3:
+		{
+			cout << "Select a student to update grade:\n\n";
+			students->changeStudent();
+			break;
+		}
+		case 4:
+		{
+			cout << "Displaying List of students:\n\n";
+			students->displayList();
+			break;
+		}
+		case 5:
+			cout << "Saving list to file and exiting" << endl;
+			students->saveToFile();
+			break;
+		default:
+			cout << "Invalid selection" << endl;
+		}
+		system("pause");
+		system("cls");
+	} while (choice != 5);
+
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Student.h///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#pragma once
+#ifndef STUDENT_H
+#define STUDENT_H
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+struct Student
+{
+	Student * next;
+	string firstName;
+	string lastName;
+	char grade;
+	int id;
+};
+
+#endif
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+StudentList.h///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#pragma once
+#ifndef STUDENTLIST_H
+#define STUDENTLIST_H
+#include <iostream>
+#include <string>
+#include "Student.h"
+
+class StudentList
+{
+private:
+	Student * head;
+public:
+	StudentList();
+	~StudentList();
+	void insertStudent();
+	void deleteStudent();
+	void changeStudent();
+	void displayList();
+	void loadFromFile();
+	void saveToFile();
+};
+
+#endif
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+StudentList.cpp/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#include "StudentList.h"
+#include <fstream>
+
+StudentList::StudentList()
+{
+	head = nullptr;
+
+}
+
+StudentList::~StudentList()
+{
+	
+	while (head != nullptr)
+	{
+		Student * temp = head;
+		head = head->next;
+		delete temp;
+	}
+
+}
+
+void StudentList::insertStudent()
+{
+	//Creates a new student node and adds the Student's info
+	Student * temp = new Student;
+	cout << "Enter Student's First Name: \n";
+	cin >> temp->firstName;
+	cout << "Enter Student's Last Name: \n";
+	cin >> temp->lastName;
+	cout << "Enter Student's ID: \n";
+	cin >> temp->id;
+	cout << "Enter Student's Grade: \n";
+	cin >> temp->grade;
+	//places new student at front of the list.
+	temp->next = head;
+	//updates head to point at new item in front of the list.
+	head = temp;
+
+}
+
+void StudentList::deleteStudent()
+{
+	Student * lead = head;
+	Student * follow = head;
+	int idToDelete;
+
+	cout << "enter an ID of student to be deleted: \n";
+	cin >> idToDelete;
+
+	//linearly searches list until right ID or the end of the list is found.
+	while ((lead->next != nullptr) && (lead->id != idToDelete))
+	{
+		follow = lead;
+		lead = lead->next;
+	}
+
+	//checks to see if ID is in the first node, if so it is deleted. 
+	if (lead == head)
+	{
+		head = head->next;
+		delete lead;
+	}
+
+	// checks to see if ID is in the last node or not in list at all. 
+	// if it is the last node, it is deleted.
+	else if (lead->next == nullptr)
+	{
+		if (lead->id == idToDelete)
+		{
+			follow->next = nullptr;
+			delete lead;
+		}
+		else
+			cout << "ID is not in the list.\n\n";
+	}
+
+	//if the ID is in the list but is not the first or last node it is deleted here.
+	else
+	{
+		follow->next = lead->next;
+		delete lead;
+	}
+}
+
+void StudentList::changeStudent()
+{
+	Student * lead = head;
+	Student * follow = head;
+	int idToUpdate;
+	char newGrade;
+
+	cout << "Enter an ID of student who's grade will be changed: \n";
+	cin >> idToUpdate;
+	cout << "What is this student's new grade?\n";
+	cin >> newGrade;
+
+	//linearly searches list until right ID or the end of the list is found.
+	while ((lead->next != nullptr) && (lead->id != idToUpdate))
+	{
+		follow = lead;
+		lead = lead->next;
+	}
+
+	//checks to see if ID is in the first node, if so it is deleted. 
+	if (lead == head)
+	{
+		lead->grade = newGrade;
+	}
+
+	// checks to see if ID is in the last node or not in list at all. 
+	// if it is the last node, it is deleted.
+	else if (lead->next == nullptr)
+	{
+		if (lead->id == idToUpdate)
+		{
+			lead->grade = newGrade;
+		}
+		else
+			cout << "ID is not in the list.\n\n";
+	}
+
+	//if the ID is in the list but is not the first or last node it is deleted here.
+	else
+	{
+		lead->grade = newGrade;
+	}
+
+
+
+}
+
+void StudentList::displayList()
+{
+	Student * scan = head;
+	if (scan == nullptr)
+	{
+		cout << "Gradebook is empty\n\n";
+		return;
+	}
+	do
+	{
+		cout << "Student Name:   " << scan->firstName << " " << scan->lastName << endl << endl;
+		cout << "Student ID #:   " << scan->id << endl << endl;
+		cout << "Student Grade:   " << scan->grade << endl << endl;
+
+		scan = scan->next;
+
+	}while (scan != nullptr);
+
+}
+
+void StudentList::loadFromFile()
+{
+	//Creates a dataFile fstream object and a temp pointer to insert nodes into a list.
+	fstream dataFile;
+	//Student * temp = new Student;
+	//Opens StudentData.txt for for input.
+	dataFile.open("StudentData.txt", ios::in);
+	//checks for errors in opening the file;
+	if (dataFile.fail())
+	{
+		cout << "Error opening file!\n\n";
+		return;
+	}
+
+	while (!dataFile.eof())
+	{
+		Student * temp = new Student;
+		dataFile >> temp->firstName;
+		dataFile >> temp->lastName;
+		dataFile >> temp->id;
+		dataFile >> temp->grade;
+		//places new student at front of the list.
+		temp->next = head;
+		if (dataFile.eof())
+		{
+			delete temp;
+		}
+		//updates head to point at new item in front of the list.
+		else
+		{
+			head = temp;
+		}
+	}
+	dataFile.close();
+
+}
+
+void StudentList::saveToFile()
+{
+	//Creates a dataFile fstream variable to hold file.
+	fstream dataFile;
+	//Opens StudentData.txt for for input.
+	dataFile.open("StudentData.txt", ios::out);
+	//checks for errors in opening the file;
+	if (dataFile.fail())
+	{
+		cout << "Error opening file!\n\n";
+		return;
+	}
+
+	Student * scan = head;
+	do
+	{
+		dataFile << scan->firstName << endl;
+		dataFile << scan->lastName << endl;
+		dataFile << scan->id << endl;
+		dataFile << scan->grade << endl;
+
+		scan = scan->next;
+
+	} while (scan != nullptr);
+
+	dataFile.close();
+
+}

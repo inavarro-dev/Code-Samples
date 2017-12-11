@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/Images">
+        <file>Minesweeper Tile Assets/Clicked.png</file>
+        <file>Minesweeper Tile Assets/Eight.png</file>
+        <file>Minesweeper Tile Assets/Five.png</file>
+        <file>Minesweeper Tile Assets/Flag.png</file>
+        <file>Minesweeper Tile Assets/Four.png</file>
+        <file>Minesweeper Tile Assets/Mine.png</file>
+        <file>Minesweeper Tile Assets/One.png</file>
+        <file>Minesweeper Tile Assets/Seven.png</file>
+        <file>Minesweeper Tile Assets/Six.png</file>
+        <file>Minesweeper Tile Assets/Three.png</file>
+        <file>Minesweeper Tile Assets/Tile.png</file>
+        <file>Minesweeper Tile Assets/Two.png</file>
+    </qresource>
+</RCC>

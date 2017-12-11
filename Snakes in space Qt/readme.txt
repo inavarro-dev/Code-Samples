@@ -1,0 +1,1 @@
+a simple space shooter game with homing rockets built in Qt

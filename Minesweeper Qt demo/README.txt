@@ -1,0 +1,1 @@
+Single click to place flag on tile, double click to open tile.
